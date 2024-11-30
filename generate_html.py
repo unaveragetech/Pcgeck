@@ -34,7 +34,6 @@ HTML_TEMPLATE = """
 </html>
 """
 
-
 def generate_html(data):
     rows = ""
     for entry in data:
@@ -43,15 +42,22 @@ def generate_html(data):
             <td>{entry['ip']}</td>
             <td>{entry['port']}</td>
             <td>{entry['status']}</td>
-            <td>{entry['hostname']}</td>
+            <td>{entry.get('hostname', 'N/A')}</td>
         </tr>
         """
     return HTML_TEMPLATE.format(rows=rows)
 
-if __name__ == "__main__":
-    with open("scan_results.json", "r") as f:
-        data = json.load(f)
+def main():
+    # Load scan results from JSON
+    with open('scan_results.json', 'r') as file:
+        data = json.load(file)
     
+    # Generate HTML content
     html_content = generate_html(data)
-    with open("index.html", "w") as f:
-        f.write(html_content)
+    
+    # Write to index.html
+    with open('index.html', 'w') as html_file:
+        html_file.write(html_content)
+
+if __name__ == "__main__":
+    main()
