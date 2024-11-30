@@ -60,7 +60,17 @@ def parse_issue_body(issue_body):
     return start_ip, end_ip, ports
 
 if __name__ == "__main__":
-    issue_body = sys.argv[1]
+    if len(sys.argv) > 1:
+        issue_body = sys.argv[1]
+    else:
+        print("No issue body provided. Using sample input for testing.")
+        # Sample issue body for testing purposes
+        issue_body = """
+        Start IP: 192.168.1.1
+        End IP: 192.168.1.5
+        Ports: 8080, 80
+        """
+
     start_ip, end_ip, ports = parse_issue_body(issue_body)
 
     if start_ip and end_ip and ports:
