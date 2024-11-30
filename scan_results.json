@@ -1,8 +1,8 @@
 [
     {
-        "ip": "192.168.1.138",
+        "ip": "67.249.252.29",
         "port": 8080,
-        "status": "closed",
-        "hostname": "N/A"
+        "status": "open",
+        "hostname": "syn-067-249-252-029.res.spectrum.com"
     }
 ]
