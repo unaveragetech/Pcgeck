@@ -57,9 +57,13 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add index.html scan_results.json
-        git commit -m "Update scan results and HTML report"
-        git push
+        git add index.html scan_results.json runs/ # Include the runs directory
+        if git diff --cached --quiet; then
+          echo "No changes to commit."
+        else
+          git commit -m "Update scan results, HTML report, and logs"
+          git push
+        fi
 
     - name: Update Log and Close Issue
       run: |
