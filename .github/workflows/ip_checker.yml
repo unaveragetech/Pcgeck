@@ -22,8 +22,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Extract Issue Body
+      id: extract_body
+      run: echo "body=$(echo '${{ github.event.issue.body }}')" >> $GITHUB_ENV
+
     - name: Run IP Scanner
-      run: python ip_scanner.py
+      run: python ip_scanner.py "$body"
 
     - name: Generate HTML Report
       run: python generate_html.py
