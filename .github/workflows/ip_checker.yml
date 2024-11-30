@@ -31,21 +31,14 @@ jobs:
         issue_body="${{ github.event.issue.body }}"
         issue_title="${{ github.event.issue.title }}"
         issue_url="${{ github.event.issue.html_url }}"
-        issue_data=$(cat <<EOF
-        {
-          "issue_title": "$issue_title",
-          "issue_url": "$issue_url",
-          "issue_body": "$issue_body",
-          "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-          "status": "running"
-        }
-EOF
-        )
+        timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        issue_data=$(printf '{"issue_title": "%s", "issue_url": "%s", "issue_body": "%s", "timestamp": "%s", "status": "running"}' \
+          "$issue_title" "$issue_url" "$issue_body" "$timestamp")
         log_file="runs/logs.json"
         if [ ! -f "$log_file" ]; then
           echo "[]" > "$log_file"
         fi
-        jq ". + [$issue_data]" "$log_file" > temp.json && mv temp.json "$log_file"
+        echo "$(jq ". + [$issue_data]" "$log_file")" > "$log_file"
 
     - name: Save Issue Body as Environment Variable
       id: save_body
@@ -74,7 +67,7 @@ EOF
         if [ ! -f "$log_file" ]; then
           echo "[]" > "$log_file"
         fi
-        jq '.[-1].status = "completed"' "$log_file" > temp.json && mv temp.json "$log_file"
+        echo "$(jq '.[-1].status = "completed"' "$log_file")" > "$log_file"
         echo "Closing the issue."
         curl -s -X PATCH -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
