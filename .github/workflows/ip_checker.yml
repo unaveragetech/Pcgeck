@@ -1,0 +1,37 @@
+name: IP Port Checker
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  check-port:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Extract issue content
+        id: get-issue
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Run IP Port Checker
+        id: port-checker
+        run: |
+          python ip_checker.py "${{ github.event.issue.body }}"
+
+      - name: Comment on Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const result = `${{ steps.port-checker.outputs.result }}`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Port check result: ${result}`
+            })
