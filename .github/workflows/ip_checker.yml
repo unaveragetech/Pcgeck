@@ -67,7 +67,8 @@ jobs:
         if [ ! -f "$log_file" ]; then
           echo "[]" > "$log_file"
         fi
-        echo "$(jq '.[-1].status = "completed"' "$log_file")" > "$log_file"
+        updated_log=$(jq '.[-1].status = "completed"' "$log_file")
+        echo "$updated_log" > "$log_file"
         echo "Closing the issue."
         curl -s -X PATCH -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
